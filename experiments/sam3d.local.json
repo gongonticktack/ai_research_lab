@@ -7,5 +7,5 @@
   "repeats": 3,
   "images": [{"id":"image-001","path":"private-data/image-001.jpg","ground_truth":null}],
   "output": "local-results",
-  "export_mesh": false
+  "export_mesh": true
 }

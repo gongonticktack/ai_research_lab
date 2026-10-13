@@ -2,7 +2,7 @@
 
 3D・AI研究の自動実験ラボ。共通JSON → 検証 → 集計 → Three.js表示 → 実測の性能変化をIssue化する最小構成です。
 
-**現状はサンプル1件、SAM実測0件です。サンプルの数値は架空で、モデル性能を示しません。**
+**SAM実測1件（公開画像1枚を3回計測）と架空サンプル1件を登録済みです。サンプルの数値はモデル性能を示しません。**
 
 ## 構成・データの流れ
 
@@ -46,12 +46,12 @@ python -m http.server 8000 --directory docs
 公式コードは推論時にCUDAを指定しており、CPU実測は提供しません。Linux/WSL2 + NVIDIA CUDA環境、Python 3.11、モデルの利用許可と単一人物画像が必要です。
 
 1. [公式INSTALL](https://github.com/facebookresearch/sam-3d-body/blob/main/INSTALL.md)とモデルライセンスを確認し、[Hugging Faceモデル](https://huggingface.co/facebook/sam-3d-body-dinov3)にアクセス申請。
-2. Linux/WSL2で `bash scripts/setup-sam3d.sh` を実行。PyTorch CUDA 12.8を使う初期構成です。上流・ライブラリの組合せはGPU上で未検証なので、依存エラーは公式手順と照合してください。
+2. Linux/WSL2で `bash scripts/setup-sam3d.sh` を実行。PyTorch CUDA 12.8を使う初期構成です。このPCでは既存WSL環境で実推論を検証済みです。新規環境のセットアップ手順は、依存エラーが出た場合に公式手順と照合してください。
 3. `source .venv-sam/bin/activate` の後、`hf auth login` を自分で実行し、`hf download facebook/sam-3d-body-dinov3 --local-dir checkpoints/sam-3d-body-dinov3` でモデルとMHR資産・model_config.yamlを取得。
 4. `python scripts/download-example.py` で公開サンプル画像を取得、または `private-data/image-001.jpg` に単一人物の使用許可がある画像を置く。設定は `experiments/sam3d.local.json`。複数人物の検出器・FOVモデルは使わず全画像を1人物として処理します。
 5. `python -m lab.benchmark --config experiments/sam3d.local.json` を実行。
 
-このPCではUbuntu-22.04の既存 `sam3d-blackwell` 環境（Python 3.11 / PyTorch 2.8.0+cu128）を確認し、RTX 5070 TiのCUDA計算と公式SAM APIのimportが通りました。ローカルの `vendor/sam-3d-body` に公式コードを取得済みです（コミット `b5c765a0d89d789985e186d396315e7590887b94`）。公開サンプル画像は取得済み、チェックポイントとMHRモデルは未取得です。環境のimport成功はモデル推論の成功を意味しません。
+このPCではUbuntu-22.04の既存 `sam3d-blackwell` 環境（Python 3.11 / PyTorch 2.8.0+cu128）を確認し、RTX 5070 TiのCUDA計算と公式SAM APIのimportが通りました。ローカルの `vendor/sam-3d-body` に公式コードを取得済みです（コミット `b5c765a0d89d789985e186d396315e7590887b94`）。公開サンプル画像・公式チェックポイント・MHRモデルを取得し、実推論と3回の計測が成功しました。モデルとMHRのSHA256は公開元のハッシュに一致しています。
 
 このPCでは `run-benchmark.bat` を開くと既存WSL環境で実行できます。別のPCではLinux環境とモデルの準備が必要です。WSL環境名が異なる場合は `scripts/run-sam3d-wsl.ps1` を修正してください。ダウンロード版に上流コードは含まれないため `scripts/setup-sam3d.sh` で取得します。
 
@@ -75,6 +75,12 @@ Settings → Pages → Build and deployment → Sourceを **GitHub Actions** に
 
 ## 検証範囲と未完了
 
-JSON検証、集計、サンプル除外、MPJPEの単位/平行移動、不足入力の扱い、Issue重複防止の15テストがローカルとGitHub Actionsで成功しました。日次集計とPages公開も成功し、公開ページのフィルターと3D合成メッシュ表示を確認しました。GPU推論・モデルダウンロード・実画像精度評価はモデルがないため未実行です。比較は記述的な変化検出で統計的な有意差ではありません。
+JSON検証、集計、サンプル除外、MPJPEの単位/平行移動、不足入力の扱い、Issue重複防止の15テストがローカルとGitHub Actionsで成功しました。日次集計とPages公開も成功し、公開ページのフィルターと3D合成メッシュ表示を確認しました。モデルダウンロード・GPU推論・人体メッシュ出力も成功しました。実画像精度評価は3D正解がないため未実行です。比較は記述的な変化検出で統計的な有意差ではありません。
 
 上流: [Meta SAM 3D Body](https://github.com/facebookresearch/sam-3d-body)。上流コードやチェックポイントは配布に含めません。実験環境の全依存関係は完全固定ではなく、実測結果には上流コミットを記録します。
+
+## 最初の実測（2026-10-13 JST）
+
+`run-ec0cf028d4bc`: RTX 5070 Ti、公開の単一人物画像1枚、1回ウォームアップ後の3回は829.99 / 842.36 / 835.29 ms。p50は835.29 ms、p95は841.66 ms（3点の線形補間であり、裾の遅延を十分に推定できる標本数ではありません）。MPJPEは正解未提供のためnull。メッシュは18,439頂点・36,874三角形で、CC BY-SA 4.0の入力出典と生成物の利用条件を記録しています。
+
+公式ローダーは一部state key不足の警告を出し、別資産のTorchScript MHRを使う経路で推論が完了しました。この1件は動作・速度の確認用です。検出器なし・既定FOV・単一画像の結果を一般的な精度やモデル間の優劣として解釈しないでください。ダッシュボードは実測メッシュを優先して表示します。

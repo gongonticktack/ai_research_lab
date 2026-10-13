@@ -32,7 +32,7 @@ async function start(){
     el('filter').addEventListener('change',render);render();
     el('analysis').textContent=data.measured_count===0?'実測結果はまだありません。モデルと単一人物画像を用意し、手元のGPUで最初のベンチマークを実行してください。サンプルの数値から性能を判断することはできません。':
       data.comparisons.length?data.comparisons.map(c=>`${c.latest}: p50変化 ${c.latency_change_percent}%${c.regression?' / 要確認':''}`).join('\n'):'比較可能な実測ペアはまだありません。';
-    try{viewer=await import('./viewer.js');await viewer.init(el('viewport'));el('reset').addEventListener('click',()=>viewer.reset());const run=data.runs.find(r=>r.artifacts.length);if(run)await loadMesh(run);}
+    try{viewer=await import('./viewer.js');await viewer.init(el('viewport'));el('reset').addEventListener('click',()=>viewer.reset());const run=[...data.runs].reverse().find(r=>r.kind==='measured'&&r.status==='completed'&&r.artifacts.length)||data.runs.find(r=>r.artifacts.length);if(run)await loadMesh(run);}
     catch(error){el('viewport').textContent='3D表示を読み込めません。インターネット/WebGLを確認してください。';el('reset').disabled=true;}
   }catch(error){el('error').hidden=false;el('error').textContent='データを読み込めません: '+error.message;}
 }
