@@ -23,6 +23,10 @@ async function loadMesh(run){
   const response=await fetch(path);if(!response.ok)throw Error('Mesh HTTP '+response.status);
   const mesh=await response.json();viewer.show(mesh);
   el('mesh-label').textContent=run.kind==='sample'?'合成サンプル · 人体推定結果ではありません':'実測メッシュ · '+run.run_id;
+  el('mesh-source').textContent=mesh.attribution||'';
+  if(typeof mesh.source_url==='string'&&mesh.source_url.startsWith('https://commons.wikimedia.org/wiki/File:')){
+    const link=document.createElement('a');link.href=mesh.source_url;link.textContent=' / 出典';el('mesh-source').append(link);
+  }
 }
 async function start(){
   try{

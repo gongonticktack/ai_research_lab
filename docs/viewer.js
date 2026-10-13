@@ -19,5 +19,7 @@ export function show(mesh){
   if(object){scene.remove(object);object.geometry.dispose();object.material.dispose();}
   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(mesh.vertices.flat(),3));geometry.setIndex(mesh.faces.flat());geometry.computeVertexNormals();geometry.center();geometry.computeBoundingSphere();
   object=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:0x80cdb5,roughness:.45,side:THREE.DoubleSide}));
+  // SAM outputs camera coordinates (+Y down). Three.js uses +Y up.
+  if(mesh.coordinate_system==='opencv-camera')object.rotation.x=Math.PI;
   const radius=geometry.boundingSphere.radius;if(radius>0)object.scale.setScalar(1/radius);scene.add(object);reset();
 }

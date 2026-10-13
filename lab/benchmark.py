@@ -60,7 +60,7 @@ def run(config):
                 record["samples"].append({"id":image["id"]+f"-repeat-{i}","input_sha256":sha256(image["path"]),"latency_ms":duration,"mpjpe_mm":error})
             if config["export_mesh"]:
                 relative=f"meshes/{record['run_id']}-{image['id']}.json"
-                write(Path(config["output"])/relative,{"kind":"measured","vertices":np.asarray(prediction["pred_vertices"]).tolist(),"faces":np.asarray(estimator.faces).tolist()})
+                write(Path(config["output"])/relative,{"kind":"measured","coordinate_system":"opencv-camera","vertices":np.asarray(prediction["pred_vertices"]).tolist(),"faces":np.asarray(estimator.faces).tolist()})
                 record["artifacts"].append(relative)
         record["metrics"]=summarize(record["samples"]); record["status"]="completed"
         record["notes"]=["Timing includes image decoding and full estimator call; model setup/export excluded. Default FOV, no detector. GT absent means MPJPE=null."]

@@ -7,7 +7,7 @@
 <div class="notice">サンプルは実測・比較・Issue生成から除外されます。GPU推論は手元で実行し、確認した結果を登録します。</div>
 <section class="stats" aria-label="実験件数"><div><span>実測完了</span><strong id="measured">—</strong></div><div><span>サンプル</span><strong id="samples">—</strong></div><div><span>集計更新 / JST</span><strong id="updated" class="date">—</strong></div></section>
 <div class="layout"><section class="panel"><div class="section-head"><h2>実験一覧</h2><label>表示 <select id="filter"><option value="all">すべて</option><option value="measured">実測のみ</option><option value="sample">サンプルのみ</option></select></label></div><div class="scroll"><table><thead><tr><th>実験 / データ</th><th>種別</th><th>状態</th><th>p50 / ms</th><th>MPJPE / mm</th></tr></thead><tbody id="runs"></tbody></table></div><p id="empty" hidden>この条件の結果はありません。</p></section>
-<section class="panel viewer"><h2>3Dプレビュー</h2><p id="mesh-label">合成サンプル · 人体推定結果ではありません</p><div id="viewport" aria-label="回転できる3Dメッシュ"></div><p class="hint">ドラッグで回転 · スクロールで拡大</p><button id="reset">視点をリセット</button></section></div>
+<section class="panel viewer"><h2>3Dプレビュー</h2><p id="mesh-label">合成サンプル · 人体推定結果ではありません</p><p id="mesh-source"></p><div id="viewport" aria-label="回転できる3Dメッシュ"></div><p class="hint">ドラッグで回転 · スクロールで拡大</p><button id="reset">視点をリセット</button></section></div>
 <section class="panel"><h2>比較と次の実験</h2><div id="analysis">読み込み中…</div></section><p id="error" role="alert" hidden></p>
 <footer>毎朝07:00 JSTに集計を予約（GitHub側の遅延あり）。データは静的JSON。推論はこのページでは実行されません。<a href="data/index.json">JSONを開く</a></footer>
 </main><script src="app.js" defer></script></body></html>
