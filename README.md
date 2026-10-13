@@ -1,3 +1,5 @@
+🌐 **Webアプリ：[AI Research Labを開く](https://gongonticktack.github.io/ai_research_lab/)**
+
 # AI Research Lab
 
 ## 概要
