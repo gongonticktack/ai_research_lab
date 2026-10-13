@@ -1,5 +1,7 @@
 # AI Research Lab
 
+リポジトリ: [ai_research_lab](https://github.com/gongonticktack/ai_research_lab) / [ダッシュボード](https://gongonticktack.github.io/ai_research_lab/)
+
 3D・AI研究の自動実験ラボ。共通JSON → 検証 → 集計 → Three.js表示 → 実測の性能変化をIssue化する最小構成です。
 
 **SAM実測1件（公開画像1枚を3回計測）と架空サンプル1件を登録済みです。サンプルの数値はモデル性能を示しません。**
