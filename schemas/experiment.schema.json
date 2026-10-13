@@ -1,0 +1,79 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "dataset": {
+      "type": "string",
+      "minLength": 1
+    },
+    "upstream": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checkpoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mhr": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repeats": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "images": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ground_truth": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "path",
+          "ground_truth"
+        ]
+      }
+    },
+    "output": {
+      "type": "string",
+      "minLength": 1
+    },
+    "export_mesh": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "dataset",
+    "upstream",
+    "checkpoint",
+    "mhr",
+    "repeats",
+    "images",
+    "output",
+    "export_mesh"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "experiment v1.0"
+}

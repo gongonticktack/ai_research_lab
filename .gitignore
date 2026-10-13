@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+vendor/
+checkpoints/
+private-data/
+local-results/
+.env
+*.ckpt
+*.pt
