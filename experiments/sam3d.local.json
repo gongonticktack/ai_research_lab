@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "dataset": "user-single-person-v1",
+  "dataset": "wikimedia-single-person-smoke-v1",
   "upstream": "vendor/sam-3d-body",
   "checkpoint": "checkpoints/sam-3d-body-dinov3/model.ckpt",
   "mhr": "checkpoints/sam-3d-body-dinov3/assets/mhr_model.pt",

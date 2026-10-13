@@ -12,7 +12,7 @@ function render(){
     }
     const small=document.createElement('small');small.textContent=r.dataset;tr.children[0].append(small);
     tr.children[1].className=r.kind==='sample'?'badge':'measured';
-    if(r.artifacts.length){const b=document.createElement('button');b.textContent='3Dを表示';b.addEventListener('click',()=>loadMesh(r));tr.children[0].append(b);}
+    if(r.artifacts.length){const b=document.createElement('button');b.textContent='3Dを表示';b.addEventListener('click',()=>loadMesh(r).catch(error=>{el('error').hidden=false;el('error').textContent='メッシュを読み込めません: '+error.message;}));tr.children[0].append(b);}
     el('runs').append(tr);
   }
 }

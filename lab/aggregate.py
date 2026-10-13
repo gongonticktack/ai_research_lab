@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 from collections import defaultdict
 from pathlib import Path
 from .common import read, write, validate, now
@@ -18,7 +19,7 @@ def aggregate(directory):
             groups[key].append(r)
     comparisons = []
     for key, series in groups.items():
-        series.sort(key=lambda r:r["created_at"])
+        series.sort(key=lambda r:datetime.fromisoformat(r["created_at"].replace("Z","+00:00")))
         if len(series)<2: continue
         previous, latest = series[-2:]
         before, after = previous["metrics"]["latency_p50_ms"], latest["metrics"]["latency_p50_ms"]

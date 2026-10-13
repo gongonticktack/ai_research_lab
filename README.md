@@ -48,12 +48,20 @@ python -m http.server 8000 --directory docs
 1. [公式INSTALL](https://github.com/facebookresearch/sam-3d-body/blob/main/INSTALL.md)とモデルライセンスを確認し、[Hugging Faceモデル](https://huggingface.co/facebook/sam-3d-body-dinov3)にアクセス申請。
 2. Linux/WSL2で `bash scripts/setup-sam3d.sh` を実行。PyTorch CUDA 12.8を使う初期構成です。上流・ライブラリの組合せはGPU上で未検証なので、依存エラーは公式手順と照合してください。
 3. `source .venv-sam/bin/activate` の後、`hf auth login` を自分で実行し、`hf download facebook/sam-3d-body-dinov3 --local-dir checkpoints/sam-3d-body-dinov3` でモデルとMHR資産・model_config.yamlを取得。
-4. `private-data/image-001.jpg` に単一人物の使用許可がある画像を置く。設定は `experiments/sam3d.local.json`。複数人物の検出器・FOVモデルは使わず全画像を1人物として処理します。
+4. `python scripts/download-example.py` で公開サンプル画像を取得、または `private-data/image-001.jpg` に単一人物の使用許可がある画像を置く。設定は `experiments/sam3d.local.json`。複数人物の検出器・FOVモデルは使わず全画像を1人物として処理します。
 5. `python -m lab.benchmark --config experiments/sam3d.local.json` を実行。
+
+このPCではUbuntu-22.04の既存 `sam3d-blackwell` 環境（Python 3.11 / PyTorch 2.8.0+cu128）を確認し、RTX 5070 TiのCUDA計算と公式SAM APIのimportが通りました。ローカルの `vendor/sam-3d-body` に公式コードを取得済みです（コミット `b5c765a0d89d789985e186d396315e7590887b94`）。公開サンプル画像は取得済み、チェックポイントとMHRモデルは未取得です。環境のimport成功はモデル推論の成功を意味しません。
+
+このPCでは `run-benchmark.bat` を開くと既存WSL環境で実行できます。別のPCではLinux環境とモデルの準備が必要です。WSL環境名が異なる場合は `scripts/run-sam3d-wsl.ps1` を修正してください。ダウンロード版に上流コードは含まれないため `scripts/setup-sam3d.sh` で取得します。
 
 不足条件は `blocked`、処理エラーは `failed`、集計指標はnullで保存して終了コード2を返します。モデル読み込みとメッシュ保存は時間計測から除外し、画像デコードを含む推論全体をCUDA同期して計測します。プロトコルが異なる公表値との直接比較はしないでください。
 
-MPJPEを計算するなら画像設定の `ground_truth` にJSONパスを指定します。形式は `{"joint_layout":"mhr70","units":"meters","joints":[[x,y,z], ...]}` で70関節が必要です。骨盤相対、Procrustes整列なし。正解がなければMPJPEはnullです。
+MPJPEを計算するなら画像設定の `ground_truth` にJSONパスを指定します。形式は `{"joint_layout":"mhr70","units":"meters","joints":[[x,y,z], ...]}` で70関節が必要です。左右の股関節（インデックス9・10）の中点を骨盤として相対座標に変換し、Procrustes整列はしません。正解がなければMPJPEはnullです。
+
+### 公開サンプルの出典
+
+[Free use human standing simple 2](https://commons.wikimedia.org/wiki/File:Free_use_human_standing_simple_2.jpg), Irawanthea92, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)。原本JPEGを変更せず取得しました。出典と公開元SHA-1は `experiments/example-source.json`、取得処理は `scripts/download-example.py` に保存しています。画像のSHA256は `81f44a9169d011de8cbd53e749ff4f48ef04fd8d2b3da6d6946c8075ce62282c` です。画像はGit対象外です。この1枚は推論の動作確認用で、3D正解はなく、精度ベンチマークの代表データではありません。
 
 ## 結果の公開・Pages
 
@@ -67,6 +75,6 @@ Settings → Pages → Build and deployment → Sourceを **GitHub Actions** に
 
 ## 検証範囲と未完了
 
-JSON検証、集計、サンプル除外、MPJPEの単位/平行移動、不足入力の扱い、Issue重複防止を自動テストします。GPU推論・モデルダウンロード・実画像精度評価はモデルとデータがないため未実行です。比較は記述的な変化検出で統計的な有意差ではありません。
+JSON検証、集計、サンプル除外、MPJPEの単位/平行移動、不足入力の扱い、Issue重複防止の15テストがローカルとGitHub Actionsで成功しました。日次集計とPages公開も成功し、公開ページのフィルターと3D合成メッシュ表示を確認しました。GPU推論・モデルダウンロード・実画像精度評価はモデルがないため未実行です。比較は記述的な変化検出で統計的な有意差ではありません。
 
 上流: [Meta SAM 3D Body](https://github.com/facebookresearch/sam-3d-body)。上流コードやチェックポイントは配布に含めません。実験環境の全依存関係は完全固定ではなく、実測結果には上流コミットを記録します。

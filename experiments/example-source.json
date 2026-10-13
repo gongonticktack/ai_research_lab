@@ -1,0 +1,11 @@
+{
+  "title": "Free use human standing simple 2",
+  "author": "Irawanthea92",
+  "source_page": "https://commons.wikimedia.org/wiki/File:Free_use_human_standing_simple_2.jpg",
+  "download_url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Free_use_human_standing_simple_2.jpg",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "publisher_sha1": "c8ffade1fd89c2171ef6443ccd796057d88b5d1e",
+  "changes": "None: original JPEG is downloaded unchanged.",
+  "purpose": "Single-image inference smoke test only. No 3D ground truth; not a representative accuracy benchmark."
+}
