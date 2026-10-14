@@ -8,6 +8,37 @@ SAM 3D Bodyの実験結果を共通JSONで記録し、検証・集計・3D表示
 
 [ダッシュボードを開く](https://gongonticktack.github.io/ai_research_lab/)
 
+## AI Studio（画像からブラウザ操作で実行）
+
+[AI Studioを開く](https://gongonticktack.github.io/ai_research_lab/studio.html)
+
+| AI | 用途 | 実行場所 | 出力 |
+| --- | --- | --- | --- |
+| MoveNet Lightning / Thunder | 軽量 / 高精度の骨格検知 | ブラウザ WebGL | 17関節 JSON・画像上の骨格 |
+| PoseNet | 骨格検知 | ブラウザ WebGL | 17関節 JSON・画像上の骨格 |
+| BlazePose | 骨格検知 | ブラウザ WebGL | 33関節・3D関節 JSON |
+| TripoSR | 写真から外見3D再構成 | ローカル CUDA GPU | 色付きGLB（リグなし） |
+| Stable Fast 3D | 写真から外見3D再構成 | ローカル CUDA GPU | テクスチャ付きGLB（リグなし） |
+
+ブラウザ骨格検知は画像選択→モデル選択→実行。モデルを初回に自動取得し、画像はブラウザ内で処理します。座標は縮小後の画像ピクセルです。BlazePoseの3D座標は推定値で、SAMのMHR骨格とは関節定義が異なります。
+
+GPUモデルはLinux / WSL2で次を実行します。
+
+```bash
+bash scripts/setup-studio.sh
+bash scripts/start-studio.sh
+```
+
+`http://127.0.0.1:8765/studio.html` を同じPCで開き、GPUモデルを選択→接続状態を確認→環境をインストール→画像選択→実行。インストールにはGit、Python venv、NVIDIAドライバー、CUDA拡張をビルドできるツールチェーン（nvccを含むCUDA toolkit）が必要です。各モデルの公式requirementsを別venvに導入するためSAM環境に影響しません。上流コミットは`vendor/*.commit`へ記録します。失敗時に導入済みとは表示しません。
+
+SF3Dは[モデルページ](https://huggingface.co/stabilityai/stable-fast-3d)で利用条件を確認してアクセスを取得し、サーバー起動前にHugging Faceへ認証してください。重みは初回推論時に取得します。公開サイトは静的ホスティングで、GPU処理はローカルPCのAPIが実行します。HTTPSページからlocalhostへの接続はブラウザに拒否される場合があるため、ローカルURLの利用を推奨します。スマホのlocalhostはスマホ自身を指します。
+
+生成モデルは人物専用ではなく、外見メッシュの品質は画像に依存します。骨格検知との自動リターゲット、リグ・スキンウェイト生成、リアル/アニメ変換はまだ実装していません。リグ付きアバターとして動かせる完成品ではありません。
+
+画像と生成物はGit管理外の`private-data/studio/`へ保存。サーバーはloopbackにだけバインドし、外部公開しません。生成・環境導入は同時に1件まで。入力はJPEG/PNG、10MB・2500万画素以下。エラー時は画面とローカルログで確認できます。
+
+公式コード：[TensorFlow.js Pose Detection](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection)、[TripoSR](https://github.com/VAST-AI-Research/TripoSR)、[Stable Fast 3D](https://github.com/Stability-AI/stable-fast-3d)。
+
 ## 主な機能
 
 - JSON Schemaによる実験設定・結果の検証。
@@ -44,7 +75,7 @@ python -m venv .venv
 # Linux / macOS
 source .venv/bin/activate
 # Windowsでは .venv\Scripts\activate を使用
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt -r requirements-studio.txt httpx
 python -m lab.aggregate
 python -m http.server 8000 --directory docs
 ```

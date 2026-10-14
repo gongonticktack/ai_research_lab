@@ -4,7 +4,7 @@
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script></head>
 <body><main>
 <header><div class="eyebrow">3D / AI · EXPERIMENT OBSERVATORY</div><h1>AI Research Lab<span class="dot">.</span></h1><p>実験を記録し、再現し、変化を見つける。</p><a href="https://github.com/gongonticktack/ai_research_lab">GitHub ↗</a></header>
-<div class="notice">サンプルは実測・比較・Issue生成から除外されます。GPU推論は手元で実行し、確認した結果を登録します。</div>
+<section class="panel"><h2>画像からAIを実行</h2><p>MoveNet・PoseNet・BlazePoseで骨格検知。TripoSR・Stable Fast 3Dで外見の3D生成。</p><a href="studio.html">AI Studioを開く →</a></section><div class="notice">サンプルは実測・比較・Issue生成から除外されます。GPU推論は手元で実行し、確認した結果を登録します。</div>
 <section class="stats" aria-label="実験件数"><div><span>実測完了</span><strong id="measured">—</strong></div><div><span>サンプル</span><strong id="samples">—</strong></div><div><span>集計更新 / JST</span><strong id="updated" class="date">—</strong></div></section>
 <div class="layout"><section class="panel"><div class="section-head"><h2>実験一覧</h2><label>表示 <select id="filter"><option value="all">すべて</option><option value="measured">実測のみ</option><option value="sample">サンプルのみ</option></select></label></div><div class="scroll"><table><thead><tr><th>実験 / データ</th><th>種別</th><th>状態</th><th>p50 / ms</th><th>MPJPE / mm</th></tr></thead><tbody id="runs"></tbody></table></div><p id="empty" hidden>この条件の結果はありません。</p></section>
 <section class="panel viewer"><h2>3Dプレビュー</h2><p id="mesh-label">合成サンプル · 人体推定結果ではありません</p><p id="mesh-source"></p><div id="viewport" aria-label="回転できる3Dメッシュ"></div><p class="hint">ドラッグで回転 · スクロールで拡大</p><button id="reset">視点をリセット</button></section></div>
